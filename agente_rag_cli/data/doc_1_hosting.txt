@@ -1,0 +1,28 @@
+Planes de Hosting Web 2026 - Servicios Delcast
+
+1. Plan Básico (Ideal para blogs y sitios personales)
+- Precio: $5/mes
+- Almacenamiento: 10 GB SSD
+- Ancho de banda: 100 GB/mes
+- Dominios: 1 dominio incluido
+- Soporte: Correo electrónico (Respuesta en 24h)
+- Bases de datos: 2 bases de datos MySQL
+- Certificado SSL gratuito
+
+2. Plan Profesional (Ideal para pymes y e-commerce pequeños)
+- Precio: $15/mes
+- Almacenamiento: 50 GB NVMe
+- Ancho de banda: Ilimitado
+- Dominios: Hasta 5 dominios
+- Soporte: Chat en vivo y correo (Respuesta en 4h)
+- Bases de datos: Ilimitadas
+- Copias de seguridad diarias automáticas
+
+3. Plan Empresarial (Para aplicaciones de alto rendimiento)
+- Precio: $45/mes
+- Almacenamiento: 200 GB NVMe
+- Ancho de banda: Ilimitado
+- Dominios: Ilimitados
+- Soporte: Teléfono 24/7 y chat prioritario (Respuesta inmediata)
+- Servidor VPS Dedicado
+- CDN global incluida
