@@ -1,17 +1,17 @@
 import os
 from dotenv import load_dotenv
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, Settings, PromptTemplate
-from llama_index.llms.gemini import Gemini
-from llama_index.embeddings.gemini import GeminiEmbedding
+from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 
 # Cargar las variables de entorno (por ejemplo, GOOGLE_API_KEY) de forma segura
 load_dotenv()
 
 # [ TAREA 7 ] Configurar LlamaIndex globalmente para usar Gemini
 # Configuramos el LLM principal
-llm = Gemini(model="models/gemini-1.5-flash")
+llm = GoogleGenAI(model="gemini-2.5-flash")
 # Configuramos el modelo de embeddings de Gemini
-embed_model = GeminiEmbedding(model_name="models/embedding-001")
+embed_model = GoogleGenAIEmbedding(model_name="models/gemini-embedding-2")
 
 # Aplicamos la configuración global a LlamaIndex
 Settings.llm = llm
