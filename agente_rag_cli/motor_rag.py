@@ -22,8 +22,8 @@ def inicializar_motor():
     [ TAREA 6 ] Función de ingesta para leer los archivos y crear el índice.
     """
     print("Ingestando documentos desde la carpeta 'data'...")
-    # Leemos todos los documentos (txt, md, etc.) dentro del directorio 'data'
-    documentos = SimpleDirectoryReader("data").load_data()
+    # Leemos todos los documentos dentro de 'data' de forma recursiva (incluyendo subcarpetas)
+    documentos = SimpleDirectoryReader("data", recursive=True).load_data()
     
     # [ TAREA 7 ] Generar el índice vectorial a partir de los documentos leídos
     print("Generando el índice de embeddings...")
