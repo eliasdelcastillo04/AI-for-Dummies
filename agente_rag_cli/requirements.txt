@@ -4,3 +4,6 @@ llama-index
 llama-index-llms-google-genai
 llama-index-embeddings-google-genai
 beautifulsoup4
+langfuse
+llama-index-callbacks-langfuse
+
