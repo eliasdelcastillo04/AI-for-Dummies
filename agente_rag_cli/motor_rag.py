@@ -33,9 +33,11 @@ Settings.embed_model = embed_model
 langfuse_callback_handler = LlamaIndexCallbackHandler(
     public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
     secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
-    host=os.getenv("LANGFUSE_HOST") or os.getenv("LANGFUSE_BASE_URL") or "https://cloud.langfuse.com"
+    host=os.getenv("LANGFUSE_HOST") or os.getenv(
+        "LANGFUSE_BASE_URL") or "https://cloud.langfuse.com"
 )
 Settings.callback_manager = CallbackManager([langfuse_callback_handler])
+
 
 def inicializar_motor():
     """
@@ -44,53 +46,64 @@ def inicializar_motor():
     print("Ingestando documentos desde la carpeta 'data'...")
     # Leemos todos los documentos dentro de 'data' de forma recursiva (incluyendo subcarpetas)
     documentos = SimpleDirectoryReader("data", recursive=True).load_data()
-    
+
     # [ TAREA 7 ] Generar el índice vectorial a partir de los documentos leídos
     print("Generando el índice de embeddings...")
     indice = VectorStoreIndex.from_documents(documentos)
     return indice
+
+
+_query_engine_cache = None
+_cached_indice_id = None
+
 
 def consultar_motor(indice, pregunta):
     """
     [ TAREA 8 ] Función de consulta (El Recomendador).
     Recibe una consulta de texto y busca la respuesta en el índice.
     """
-    # Configurar un prompt estricto para evitar alucinaciones
-    prompt_estricto = (
-        "Eres un asesor experto de la empresa. Responde SOLO basándote en la información "
-        "provista en los documentos. Si la respuesta no está, di 'No tengo esa información'.\n"
-        "---------------------\n"
-        "Contexto provisto:\n"
-        "{context_str}\n"
-        "---------------------\n"
-        "Pregunta: {query_str}\n"
-        "Respuesta: "
-    )
-    qa_prompt_template = PromptTemplate(prompt_estricto)
-    
-    # Crear el motor de búsqueda (query engine) pasando el prompt personalizado
-    query_engine = indice.as_query_engine(text_qa_template=qa_prompt_template)
-    
+    global _query_engine_cache, _cached_indice_id
+
+    if _query_engine_cache is None or id(indice) != _cached_indice_id:
+        # Configurar un prompt estricto para evitar alucinaciones
+        prompt_estricto = (
+            "Eres un asesor experto de la empresa. Responde SOLO basándote en la información "
+            "provista en los documentos. Si la respuesta no está, di 'No tengo esa información'.\n"
+            "---------------------\n"
+            "Contexto provisto:\n"
+            "{context_str}\n"
+            "---------------------\n"
+            "Pregunta: {query_str}\n"
+            "Respuesta: "
+        )
+        qa_prompt_template = PromptTemplate(prompt_estricto)
+
+        # Crear el motor de búsqueda (query engine) pasando el prompt personalizado
+        _query_engine_cache = indice.as_query_engine(
+            text_qa_template=qa_prompt_template)
+        _cached_indice_id = id(indice)
+
     # Realizar la consulta
-    respuesta = query_engine.query(pregunta)
+    respuesta = _query_engine_cache.query(pregunta)
     return respuesta
+
 
 if __name__ == "__main__":
     # Prueba rápida del sistema
     try:
         indice_rag = inicializar_motor()
         print("\n¡Índice creado con éxito! Probando consultas...\n")
-        
+
         # Consulta de prueba solicitada por la directiva de MLOps
         pregunta = "¿Qué incluye el Plan Básico y cuál es la política de devoluciones?"
-        
+
         print(f"🧑 Usuario: {pregunta}")
         respuesta = consultar_motor(indice_rag, pregunta)
         print(f"🤖 Asesor: {respuesta}\n")
-        
+
         # Alerta de validación de Langfuse
         print("⚠️  [ALERTA MLOPS] Revisa el panel web de Langfuse (Host: https://cloud.langfuse.com) para verificar la generación exitosa del Trace y los costos/latencias asociados a esta consulta.")
-            
+
     except Exception as e:
         print(f"Error al ejecutar el motor RAG: {e}")
     finally:
