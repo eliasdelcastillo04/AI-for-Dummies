@@ -9,7 +9,7 @@ from langfuse.llama_index import LlamaIndexCallbackHandler
 # Cargar las variables de entorno (por ejemplo, GOOGLE_API_KEY) de forma segura
 load_dotenv()
 
-# [ TAREA 7 ] Configurar LlamaIndex globalmente para usar Gemini
+# Configurar LlamaIndex globalmente para usar Gemini
 # Configuramos el LLM principal con reintentos
 llm = GoogleGenAI(
     model="gemini-2.5-flash",
@@ -29,7 +29,7 @@ embed_model = GoogleGenAIEmbedding(
 Settings.llm = llm
 Settings.embed_model = embed_model
 
-# [ TAREA 14 ] Configurar el Callback de Langfuse para Telemetría y Observabilidad
+# Configurar el Callback de Langfuse para Telemetría y Observabilidad
 langfuse_callback_handler = LlamaIndexCallbackHandler(
     public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
     secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
@@ -39,20 +39,20 @@ Settings.callback_manager = CallbackManager([langfuse_callback_handler])
 
 def inicializar_motor():
     """
-    [ TAREA 6 ] Función de ingesta para leer los archivos y crear el índice.
+    Función de ingesta para leer los archivos y crear el índice.
     """
     print("Ingestando documentos desde la carpeta 'data'...")
     # Leemos todos los documentos dentro de 'data' de forma recursiva (incluyendo subcarpetas)
     documentos = SimpleDirectoryReader("data", recursive=True).load_data()
     
-    # [ TAREA 7 ] Generar el índice vectorial a partir de los documentos leídos
+    # Generar el índice vectorial a partir de los documentos leídos
     print("Generando el índice de embeddings...")
     indice = VectorStoreIndex.from_documents(documentos)
     return indice
 
 def consultar_motor(indice, pregunta):
     """
-    [ TAREA 8 ] Función de consulta (El Recomendador).
+    Función de consulta (El Recomendador).
     Recibe una consulta de texto y busca la respuesta en el índice.
     """
     # Configurar un prompt estricto para evitar alucinaciones
